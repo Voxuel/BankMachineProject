@@ -115,8 +115,9 @@ namespace BankMachine
             }
         }
         // Asigns account balance depending on user.
-        static void UserAccounts(decimal[,] accounts, string user, out decimal first, out decimal second)
+        static int UserAccounts(decimal[,] accounts, string user, out decimal first, out decimal second)
         {
+            int currentUser = 0;
             first = 0;
             second = 0;
             switch (user)
@@ -124,24 +125,30 @@ namespace BankMachine
                 case "John":
                     first = accounts[0, 0];
                     second = accounts[0, 1];
+                    currentUser = 1;
                     break;
                 case "Roger":
                     first = accounts[1, 0];
                     second = accounts[1, 1];
+                    currentUser = 2;
                     break;
                 case "Jessica":
                     first = accounts[2, 0];
                     second = accounts[2, 1];
+                    currentUser = 3;
                     break;
                 case "Cindy":
                     first = accounts[3, 0];
                     second = accounts[3, 1];
+                    currentUser = 4;
                     break;
                 case "Joe":
                     first = accounts[4, 0];
                     second = accounts[4, 1];
+                    currentUser = 5;
                     break;
             }
+            return currentUser;
         }
         static void ViewAcountBalance(string user, decimal[,] accounts, string[,] allUsers)
         {
@@ -168,9 +175,18 @@ namespace BankMachine
         static void TransferMoney(string user, decimal[,] accounts, string[,] allusers)
         {
             Console.Clear();
-            Console.WriteLine("From what account do you wish to move money to?");
+            Console.WriteLine("From what account do you wish to move money from?");
             ViewAcountBalance(user, accounts, allusers);
-        }
+            int input = SafleyParsed();
+            Console.Clear();
+            Console.Write("Now enter the amount you wish to move: ");
+            decimal ammountToTransfer = SafleyParsed();
+            int currentUser = UserAccounts(accounts, user, out decimal first, out decimal second);
+            if(ValidAmountToTransfer(ammountToTransfer, first, second))
+            {
+                
+            }
+        } 
         static void MakeWithdraw()
         {
 
@@ -178,6 +194,46 @@ namespace BankMachine
         static void Logout(decimal[,] accounts, string[,] allUsers)
         {
             Login(accounts, allUsers);
+        }
+        static void UpdatedNewAmount(int user, int amountToTransfer, int selectedAccount, decimal[,] accounts)
+        {
+            
+        }
+        static int SafleyParsed()
+        {
+            int input = 0;
+            var isValid = false;
+            while (isValid == false)
+            {
+                try
+                {
+                    int.TryParse(Console.ReadLine(), out input);
+                    isValid = true;
+                    break;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+            }
+            return input;
+        }
+        static bool ValidAmountToTransfer(decimal amountToTransfer, decimal first, decimal second)
+        {
+            if(amountToTransfer > first || amountToTransfer < first)
+            {
+                Console.WriteLine("The amount is to great for what exists");
+                return false;
+            }
+            else if(amountToTransfer > second || amountToTransfer < second)
+            {
+                Console.WriteLine("The amount is to small for what exists");
+                return false;
+            }
+            else
+            {
+                return true;
+            }
         }
     }
 }
