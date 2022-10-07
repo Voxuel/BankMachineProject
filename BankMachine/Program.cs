@@ -9,7 +9,7 @@ namespace BankMachine
         public static void Main(string[] args)
         {
             string[,] allUsers = new string[,] { { "John", "1234" }, { "Roger", "3056" }, { "Jessica", "1010" }, { "Cindy", "0010" }, { "Joe", "5050" } };
-            decimal[,] accounts = new decimal[,] { { 13942.44m, 43000.00m }, { 13.45m, 4325.75m }, { 8473.99m, 382435.00m }, { 100.99m, 2000.00m }, { 1930.50m, 100000.00m } };
+            decimal[,] accounts = new decimal[,] { { 13942.44m, 43000.00m }, { 13.45m, 0m }, { 8473.99m, 382435.00m }, { 100.99m, 2000.00m }, { 1930.50m, 100000.00m } };
             Login(accounts, allUsers);
         }
         // Login structure let's user try to login 3 times or else the app closes.
@@ -46,8 +46,6 @@ namespace BankMachine
                         break;
                     }
                 }
-
-
                 if (userNameValid == true && userPinValid == true)
                 {
                     Console.WriteLine("Success");
@@ -143,7 +141,6 @@ namespace BankMachine
                     first = accounts[4, 0];
                     second = accounts[4, 1];
                     break;
-
             }
         }
         static void ViewAcountBalance(string user, decimal[,] accounts, string[,] allUsers)
@@ -172,7 +169,7 @@ namespace BankMachine
         {
             Console.Clear();
             Console.WriteLine("From what account do you wish to move money to?");
-
+            ViewAcountBalance(user, accounts, allusers);
         }
         static void MakeWithdraw()
         {
