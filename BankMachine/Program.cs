@@ -178,7 +178,7 @@ namespace BankMachine
             var isValid = false;
             decimal amountToTransfer = 0m;
             Console.WriteLine("From what account do you wish to move money from?");
-            ViewAcountBalance(user, accounts, allusers);
+            ShowCurrentAccount(user, allusers,accounts);
             while (isValid == false)
             {
                 try
@@ -192,7 +192,6 @@ namespace BankMachine
                 }
             }
             isValid = false;
-            Console.Clear();
             Console.Write("Now enter the amount you wish to move: ");
             while (isValid == false)
             {
@@ -201,13 +200,13 @@ namespace BankMachine
                     amountToTransfer = decimal.Parse(Console.ReadLine());
                     isValid = true;
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     Console.WriteLine(ex.Message);
                 }
             }
             int currentUser = UserAccounts(accounts, user, out decimal first, out decimal second);
-            if(ValidAmountToTransfer(amountToTransfer, first, second))
+            if (ValidAmountToTransfer(amountToTransfer, first, second))
             {
                 Console.WriteLine("working");
             }
@@ -220,6 +219,34 @@ namespace BankMachine
         static void Logout(decimal[,] accounts, string[,] allUsers)
         {
             Login(accounts, allUsers);
+        }
+        static int ShowCurrentAccount(string user, string[,] allUsers, decimal[,] accounts)
+        {
+            int temp = 0;
+            for (int i = 0; i < allUsers.Length; i++)
+            {
+                if (allUsers[i, 0].Contains(user) && user != "Roger")
+                {
+                    Console.WriteLine("Main account: " + accounts[i, 0]);
+                    Console.WriteLine("Savings account: " + accounts[i,1]);
+                    temp = 1;
+                    break;
+                }
+                else if(allUsers[i,0].Contains(user) && user == "Jessica")
+                {
+                    Console.WriteLine("Main account: " + accounts[i, 0]);
+                    Console.WriteLine("Salery account: " + accounts[i, 1]);
+                    temp = 1;
+                    break;
+                }
+                else if (allUsers[i, 0].Contains(user))
+                {
+                    Console.WriteLine("Main account: " + accounts[i,0]);
+                    temp = 2;
+                    break;
+                }
+            }
+            return temp;
         }
         static void UpdatedNewAmount(int user, int amountToTransfer, int selectedAccount, decimal[,] accounts)
         {
