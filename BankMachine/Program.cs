@@ -28,20 +28,13 @@ namespace BankMachine
                 Console.Write("PIN-Code: ");
                 var inputPin = Console.ReadLine();
 
-                for (int i = 0; i < allUsers.Length; i++)
+                for (int i = 0; i < allUsers.Length / 2; i++)
                 {
-                    try
+
+                    if (allUsers[i, 0] == inputName && allUsers[i, 1] == inputPin)
                     {
-                        if (allUsers[i, 0].Contains(inputName) && allUsers[i, 1].Contains(inputPin))
-                        {
-                            userNameValid = true;
-                            userPinValid = true;
-                            break;
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine(ex.Message);
+                        userNameValid = true;
+                        userPinValid = true;
                         break;
                     }
                 }
@@ -208,7 +201,7 @@ namespace BankMachine
                     scdSelectedAccountInput = int.Parse(Console.ReadLine());
                     isValid = true;
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     Console.WriteLine(ex.Message);
                 }
@@ -230,7 +223,7 @@ namespace BankMachine
             int currentUser = UserAccounts(accounts, user, out decimal first, out decimal second);
             if (ValidAmountToTransfer(amountToTransfer, selectedAccountInput, first, second))
             {
-                UpdatedNewAmountBalance(currentUser, amountToTransfer, selectedAccountInput,scdSelectedAccountInput, accounts);
+                UpdatedNewAmountBalance(currentUser, amountToTransfer, selectedAccountInput, scdSelectedAccountInput, accounts);
             }
             Console.WriteLine("The current account balance is now: ");
             ShowCurrentAccount(user, allUsers, accounts);
@@ -278,11 +271,11 @@ namespace BankMachine
             string pin = Console.ReadLine();
             if (!PinCodeCheck(pin, allUsers))
             {
-                Menu(cUser,accounts,allUsers);
+                Menu(cUser, accounts, allUsers);
             }
             if (ValidAmountToTransfer(ammountToWithdraw, selectedAccount, first, second))
             {
-                for (int i = 0; i < accounts.Length; i++)
+                for (int i = 0; i < accounts.Length / 2; i++)
                 {
                     if (user == i && selectedAccount == 1)
                     {
@@ -310,7 +303,7 @@ namespace BankMachine
         // Method for handling user accounts seperate with forcing to return to menu like "ViewAccountBalance.
         static void ShowCurrentAccount(string user, string[,] allUsers, decimal[,] accounts)
         {
-            for (int i = 0; i < allUsers.Length; i++)
+            for (int i = 0; i < allUsers.Length / 2; i++)
             {
                 if (allUsers[i, 0].Contains(user) && user != "Roger")
                 {
@@ -332,9 +325,9 @@ namespace BankMachine
             }
         }
         // Method to update account balance.
-        static void UpdatedNewAmountBalance(int user, decimal amountToTransfer, int selectedAccount,int scdSelectedAccount, decimal[,] accounts)
+        static void UpdatedNewAmountBalance(int user, decimal amountToTransfer, int selectedAccount, int scdSelectedAccount, decimal[,] accounts)
         {
-            for (int i = 0; i < accounts.Length; i++)
+            for (int i = 0; i < accounts.Length / 2; i++)
             {
                 if (user == i && selectedAccount == 1 && scdSelectedAccount == 2)
                 {
@@ -373,7 +366,7 @@ namespace BankMachine
         static bool PinCodeCheck(string pin, string[,] allUsers)
         {
             bool isValid = false;
-            for (int i = 0; i < allUsers.Length; i++)
+            for (int i = 0; i < allUsers.Length / 2; i++)
             {
                 try
                 {
