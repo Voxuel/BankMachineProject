@@ -4,10 +4,9 @@ namespace BankMachine
 {
     class Program
     {
-        // 2D array to store each user.
-
         public static void Main(string[] args)
         {
+            // 2D arrays to store each user and accounts.
             string[,] allUsers = new string[,] { { "John", "1234" }, { "Roger", "3056" }, { "Jessica", "1010" }, { "Cindy", "0010" }, { "Joe", "5050" } };
             decimal[,] accounts = new decimal[,] { { 13942.44m, 43000.00m }, { 13.45m, 0m }, { 8473.99m, 382435.00m }, { 100.99m, 2000.00m }, { 1930.50m, 100000.00m } };
             Login(accounts, allUsers);
@@ -150,6 +149,7 @@ namespace BankMachine
             }
             return currentUser;
         }
+        // Displays all account balances
         static void ViewAcountBalance(string user, decimal[,] accounts, string[,] allUsers)
         {
             UserAccounts(accounts, user, out decimal first, out decimal second);
@@ -172,8 +172,14 @@ namespace BankMachine
             Console.Clear();
             Menu(user, accounts, allUsers);
         }
+        // Method for transfering money between accounts
         static void TransferMoney(string user, decimal[,] accounts, string[,] allusers)
         {
+            if (user == "Roger")
+            {
+                Console.WriteLine("You only have 1 account and therefore can't transfer between others, Press enter to return to menu");
+                Menu(user, accounts, allusers);
+            }
             int selectedAccountInput = 0;
             var isValid = false;
             decimal amountToTransfer = 0m;
@@ -206,9 +212,9 @@ namespace BankMachine
                 }
             }
             int currentUser = UserAccounts(accounts, user, out decimal first, out decimal second);
-            if (ValidAmountToTransfer(amountToTransfer, first, second))
+            if (ValidAmountToTransfer(amountToTransfer,selectedAccountInput, first, second))
             {
-                UpdatedNewAmountBalance(currentUser,user,amountToTransfer,selectedAccountInput,accounts);
+                UpdatedNewAmountBalance(currentUser,amountToTransfer,selectedAccountInput,accounts);
             }
             Console.Clear();
             Menu(user,accounts,allusers);
@@ -228,52 +234,53 @@ namespace BankMachine
             {
                 if (allUsers[i, 0].Contains(user) && user != "Roger")
                 {
-                    Console.WriteLine("Main account: " + accounts[i, 0]);
-                    Console.WriteLine("Savings account: " + accounts[i,1]);
+                    Console.WriteLine("1) Main account: " + accounts[i, 0]);
+                    Console.WriteLine("2) Savings account: " + accounts[i,1]);
                     temp = 1;
                     break;
                 }
                 else if(allUsers[i,0].Contains(user) && user == "Jessica")
                 {
-                    Console.WriteLine("Main account: " + accounts[i, 0]);
-                    Console.WriteLine("Salery account: " + accounts[i, 1]);
+                    Console.WriteLine("1) Main account: " + accounts[i, 0]);
+                    Console.WriteLine("2) Salery account: " + accounts[i, 1]);
                     temp = 1;
                     break;
                 }
                 else if (allUsers[i, 0].Contains(user))
                 {
-                    Console.WriteLine("Main account: " + accounts[i,0]);
+                    Console.WriteLine("1) Main account: " + accounts[i,0]);
                     temp = 2;
                     break;
                 }
             }
             return temp;
         }
-        static void UpdatedNewAmountBalance(int user,string cUser, decimal amountToTransfer, int selectedAccount, decimal[,] accounts)
+        static void UpdatedNewAmountBalance(int user, decimal amountToTransfer, int selectedAccount, decimal[,] accounts)
         {
-            int currentUser = UserAccounts(accounts, cUser, out decimal first, out decimal second);
             for (int i = 0; i < accounts.Length; i++)
             {
-                if(currentUser == i && selectedAccount == 1)
+                if(user == i && selectedAccount == 1)
                 {
                     accounts[i, 0] -= amountToTransfer;
                     accounts[i, 1] += amountToTransfer;
+                    break;
                 }
-                else if(currentUser == i && selectedAccount == 2)
+                else if(user == i && selectedAccount == 2)
                 {
-                    accounts[i, 1] -= selectedAccount;
+                    accounts[i, 1] -= amountToTransfer;
                     accounts[i, 0] += amountToTransfer;
+                    break;
                 }
             }
         }
-        static bool ValidAmountToTransfer(decimal amountToTransfer, decimal first, decimal second)
+        static bool ValidAmountToTransfer(decimal amountToTransfer,int selectedAccount, decimal first, decimal second)
         {
-            if(amountToTransfer > first || amountToTransfer < first)
+            if(amountToTransfer > first && selectedAccount != 2 || amountToTransfer > second && selectedAccount != 1)
             {
                 Console.WriteLine("The amount is to great for what exists");
                 return false;
             }
-            else if(amountToTransfer > second || amountToTransfer < second)
+            else if(amountToTransfer <= 0 || amountToTransfer <= 0)
             {
                 Console.WriteLine("The amount is to small for what exists");
                 return false;
