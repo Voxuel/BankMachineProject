@@ -100,7 +100,7 @@ namespace BankMachine
                     error = 0;
                     break;
                 case 3:
-                    MakeWithdraw();
+                    MakeWithdraw(user, allUsers, accounts);
                     error = 0;
                     break;
                 case 4:
@@ -219,14 +219,63 @@ namespace BankMachine
             Console.Clear();
             Menu(user,accounts,allusers);
         }
-        static void MakeWithdraw()
+        static void MakeWithdraw(string cUser,string[,] allUsers,decimal[,] accounts)
         {
-
+            bool isValid = false;
+            int user = UserAccounts(accounts, cUser, out decimal first, out decimal second);
+            int selectedAccount = 0;
+            decimal ammountToWithdraw = 0;
+            ShowCurrentAccount(cUser, allUsers, accounts);
+            Console.WriteLine("Enter from what account you would like to make the withdraw");
+            while (isValid == false)
+            {
+                try
+                {
+                    selectedAccount = int.Parse(Console.ReadLine());
+                    isValid = true;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+            }
+            isValid = false;
+            Console.WriteLine("Now enter the amount you would like to withdraw");
+            while (isValid == false)
+            {
+                try
+                {
+                    ammountToWithdraw = decimal.Parse(Console.ReadLine());
+                    isValid = true;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+            }
+            if (ValidAmountToTransfer(ammountToWithdraw,selectedAccount, first, second))
+            {
+                for (int i = 0; i < accounts.Length; i++)
+                {
+                    if (user == i && selectedAccount == 1)
+                    {
+                        accounts[i, 0] -= ammountToWithdraw;
+                        break;
+                    }
+                    else if (user == i && selectedAccount == 2 && user != 1)
+                    {
+                        accounts[i, 1] -= ammountToWithdraw;
+                        break;
+                    }
+                }
+            }
+            Menu(cUser,accounts,allUsers);
         }
         static void Logout(decimal[,] accounts, string[,] allUsers)
         {
             Login(accounts, allUsers);
         }
+        // Shows the current users account without going back to menu.
         static int ShowCurrentAccount(string user, string[,] allUsers, decimal[,] accounts)
         {
             int temp = 0;
@@ -255,6 +304,7 @@ namespace BankMachine
             }
             return temp;
         }
+        // Method to update account balance.
         static void UpdatedNewAmountBalance(int user, decimal amountToTransfer, int selectedAccount, decimal[,] accounts)
         {
             for (int i = 0; i < accounts.Length; i++)
@@ -273,6 +323,7 @@ namespace BankMachine
                 }
             }
         }
+        // Method to check if the amount wanted to be transferd is within range of what is on the account.
         static bool ValidAmountToTransfer(decimal amountToTransfer,int selectedAccount, decimal first, decimal second)
         {
             if(amountToTransfer > first && selectedAccount != 2 || amountToTransfer > second && selectedAccount != 1)
