@@ -274,6 +274,12 @@ namespace BankMachine
                     Console.WriteLine(ex.Message);
                 }
             }
+            Console.WriteLine("Now enter pincode to accept the withdraw: ");
+            string pin = Console.ReadLine();
+            if (!PinCodeCheck(pin, allUsers))
+            {
+                Menu(cUser,accounts,allUsers);
+            }
             if (ValidAmountToTransfer(ammountToWithdraw, selectedAccount, first, second))
             {
                 for (int i = 0; i < accounts.Length; i++)
@@ -363,6 +369,29 @@ namespace BankMachine
             {
                 return true;
             }
+        }
+        static bool PinCodeCheck(string pin, string[,] allUsers)
+        {
+            bool isValid = false;
+            for (int i = 0; i < allUsers.Length; i++)
+            {
+                try
+                {
+                    if (allUsers[i, 1] == pin)
+                    {
+                        isValid = true;
+                        break;
+                    }
+                }
+                catch
+                {
+                    Console.WriteLine("Wrong pincode, Press enter to return to menu and try again");
+                    Console.ReadLine();
+                    break;
+                }
+
+            }
+            return isValid;
         }
     }
 }
