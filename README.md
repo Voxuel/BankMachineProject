@@ -1,5 +1,5 @@
 ## BankMachineProject
-# A small app for handling bank errends
+A small app for handling bank errends
 
 # Usage
 The app works around letting the user check account balances and transfer money between accounts.
