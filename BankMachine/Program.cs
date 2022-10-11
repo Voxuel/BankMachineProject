@@ -125,27 +125,27 @@ namespace BankMachine
                 case "John":
                     first = accounts[0, 0];
                     second = accounts[0, 1];
-                    currentUser = 1;
+                    currentUser = 0;
                     break;
                 case "Roger":
                     first = accounts[1, 0];
                     second = accounts[1, 1];
-                    currentUser = 2;
+                    currentUser = 1;
                     break;
                 case "Jessica":
                     first = accounts[2, 0];
                     second = accounts[2, 1];
-                    currentUser = 3;
+                    currentUser = 2;
                     break;
                 case "Cindy":
                     first = accounts[3, 0];
                     second = accounts[3, 1];
-                    currentUser = 4;
+                    currentUser = 3;
                     break;
                 case "Joe":
                     first = accounts[4, 0];
                     second = accounts[4, 1];
-                    currentUser = 5;
+                    currentUser = 4;
                     break;
             }
             return currentUser;
@@ -208,9 +208,10 @@ namespace BankMachine
             int currentUser = UserAccounts(accounts, user, out decimal first, out decimal second);
             if (ValidAmountToTransfer(amountToTransfer, first, second))
             {
-                Console.WriteLine("working");
+                UpdatedNewAmountBalance(currentUser,user,amountToTransfer,selectedAccountInput,accounts);
             }
             Console.Clear();
+            Menu(user,accounts,allusers);
         }
         static void MakeWithdraw()
         {
@@ -248,9 +249,22 @@ namespace BankMachine
             }
             return temp;
         }
-        static void UpdatedNewAmount(int user, int amountToTransfer, int selectedAccount, decimal[,] accounts)
+        static void UpdatedNewAmountBalance(int user,string cUser, decimal amountToTransfer, int selectedAccount, decimal[,] accounts)
         {
-            
+            int currentUser = UserAccounts(accounts, cUser, out decimal first, out decimal second);
+            for (int i = 0; i < accounts.Length; i++)
+            {
+                if(currentUser == i && selectedAccount == 1)
+                {
+                    accounts[i, 0] -= amountToTransfer;
+                    accounts[i, 1] += amountToTransfer;
+                }
+                else if(currentUser == i && selectedAccount == 2)
+                {
+                    accounts[i, 1] -= selectedAccount;
+                    accounts[i, 0] += amountToTransfer;
+                }
+            }
         }
         static bool ValidAmountToTransfer(decimal amountToTransfer, decimal first, decimal second)
         {
