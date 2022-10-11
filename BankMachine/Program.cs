@@ -8,22 +8,22 @@ namespace BankMachine
         {
             // 2D arrays to store each user and accounts.
             string[,] allUsers = new string[,] { { "John", "1234" }, { "Roger", "3056" }, { "Jessica", "1010" }, { "Cindy", "0010" }, { "Joe", "5050" } };
-            decimal[,] accounts = new decimal[,] { { 13942.44m, 43000.00m }, { 13.45m, 0m }, { 8473.99m, 382435.00m }, { 100.99m, 2000.00m }, { 1930.50m, 100000.00m } };
+            decimal[,] accounts = new decimal[,] { { 13942.44m, 43000.00m }, { 13.45m, 0.0m }, { 8473.99m, 382435.00m }, { 100.99m, 2000.00m }, { 1930.50m, 100000.00m } };
             Login(accounts, allUsers);
         }
         // Login structure let's user try to login 3 times or else the app closes.
         static void Login(decimal[,] accounts, string[,] allUsers)
         {
+            Console.WriteLine("Welcome to the bank");
+            Console.WriteLine();
+            Console.Write("Username: ");
+            var inputName = Console.ReadLine();
             Console.Clear();
             int tries = 0;
             do
             {
                 bool userNameValid = false;
                 bool userPinValid = false;
-                Console.WriteLine("Welcome to the bank");
-                Console.WriteLine();
-                Console.Write("Username: ");
-                var inputName = Console.ReadLine();
                 Console.WriteLine();
                 Console.Write("PIN-Code: ");
                 var inputPin = Console.ReadLine();
@@ -39,9 +39,9 @@ namespace BankMachine
                             break;
                         }
                     }
-                    catch (Exception)
+                    catch (Exception ex)
                     {
-                        Console.WriteLine("Wrong input type. Enter username and 4 digit PIN");
+                        Console.WriteLine(ex.Message);
                         break;
                     }
                 }
@@ -57,13 +57,12 @@ namespace BankMachine
                 }
             } while (tries < 3);
             Console.WriteLine("Wrong input too many timees, Please restart the app and try again");
-            Environment.Exit(100);
+            Environment.Exit(0);
         }
         // Menu selection section.
-        static void Menu(string n, decimal[,] accounts, string[,] allUsers)
+        static void Menu(string current, decimal[,] accounts, string[,] allUsers)
         {
             Console.Clear();
-            string current = n;
             bool isRuning = true;
             int input = 0;
             Console.WriteLine("Welcome {0}", current);
@@ -85,11 +84,10 @@ namespace BankMachine
                 if (e == 0) isRuning = false;
                 else if (e == 1) continue;
             }
-
         }
-        static void UserMenuChoice(int x, string user, decimal[,] accounts, string[,] allUsers, out int error)
+        static void UserMenuChoice(int userInput, string user, decimal[,] accounts, string[,] allUsers, out int error)
         {
-            switch (x)
+            switch (userInput)
             {
                 case 1:
                     ViewAcountBalance(user, accounts, allUsers);
@@ -153,19 +151,21 @@ namespace BankMachine
         static void ViewAcountBalance(string user, decimal[,] accounts, string[,] allUsers)
         {
             UserAccounts(accounts, user, out decimal first, out decimal second);
+            Math.Round(first, 2, MidpointRounding.ToEven);
+            Math.Round(second, 2, MidpointRounding.ToEven);
             if (user == "Roger")
             {
-                Console.WriteLine("Main account: {0}", first);
+                Console.WriteLine("Main account: {0:C}", first);
             }
             else if (user == "Jessica")
             {
-                Console.WriteLine("Main account: {0}", first);
-                Console.WriteLine("Salery account: {0}", second);
+                Console.WriteLine("Main account: {0:C}", first);
+                Console.WriteLine("Salery account: {0:C}", second);
             }
             else
             {
-                Console.WriteLine("Main account: {0}", first);
-                Console.WriteLine("Savings account: {0}", second);
+                Console.WriteLine("Main account: {0:C}", first);
+                Console.WriteLine("Savings account: {0:C}", second);
             }
             Console.WriteLine("Press enter to return to the menu:");
             Console.ReadKey();
@@ -173,18 +173,19 @@ namespace BankMachine
             Menu(user, accounts, allUsers);
         }
         // Method for transfering money between accounts
-        static void TransferMoney(string user, decimal[,] accounts, string[,] allusers)
+        static void TransferMoney(string user, decimal[,] accounts, string[,] allUsers)
         {
             if (user == "Roger")
             {
                 Console.WriteLine("You only have 1 account and therefore can't transfer between others, Press enter to return to menu");
-                Menu(user, accounts, allusers);
+                Console.ReadKey();
+                Menu(user, accounts, allUsers);
             }
             int selectedAccountInput = 0;
             var isValid = false;
             decimal amountToTransfer = 0m;
             Console.WriteLine("From what account do you wish to move money from?");
-            ShowCurrentAccount(user, allusers,accounts);
+            ShowCurrentAccount(user, allUsers, accounts);
             while (isValid == false)
             {
                 try
@@ -193,6 +194,21 @@ namespace BankMachine
                     isValid = true;
                 }
                 catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+            }
+            isValid = false;
+            Console.WriteLine("Now enter to what account you would like to move the money to:");
+            int scdSelectedAccountInput = 0;
+            while (isValid == false)
+            {
+                try
+                {
+                    scdSelectedAccountInput = int.Parse(Console.ReadLine());
+                    isValid = true;
+                }
+                catch(Exception ex)
                 {
                     Console.WriteLine(ex.Message);
                 }
@@ -212,14 +228,19 @@ namespace BankMachine
                 }
             }
             int currentUser = UserAccounts(accounts, user, out decimal first, out decimal second);
-            if (ValidAmountToTransfer(amountToTransfer,selectedAccountInput, first, second))
+            if (ValidAmountToTransfer(amountToTransfer, selectedAccountInput, first, second))
             {
-                UpdatedNewAmountBalance(currentUser,amountToTransfer,selectedAccountInput,accounts);
+                UpdatedNewAmountBalance(currentUser, amountToTransfer, selectedAccountInput,scdSelectedAccountInput, accounts);
             }
+            Console.WriteLine("The current account balance is now: ");
+            ShowCurrentAccount(user, allUsers, accounts);
+            Console.WriteLine("Press enter to return to menu");
+            Console.ReadLine();
             Console.Clear();
-            Menu(user,accounts,allusers);
+            Menu(user, accounts, allUsers);
         }
-        static void MakeWithdraw(string cUser,string[,] allUsers,decimal[,] accounts)
+        // Method for withdrawing money.
+        static void MakeWithdraw(string cUser, string[,] allUsers, decimal[,] accounts)
         {
             bool isValid = false;
             int user = UserAccounts(accounts, cUser, out decimal first, out decimal second);
@@ -253,7 +274,7 @@ namespace BankMachine
                     Console.WriteLine(ex.Message);
                 }
             }
-            if (ValidAmountToTransfer(ammountToWithdraw,selectedAccount, first, second))
+            if (ValidAmountToTransfer(ammountToWithdraw, selectedAccount, first, second))
             {
                 for (int i = 0; i < accounts.Length; i++)
                 {
@@ -269,53 +290,53 @@ namespace BankMachine
                     }
                 }
             }
-            Menu(cUser,accounts,allUsers);
+            Console.WriteLine("The current account balance is now: ");
+            ShowCurrentAccount(cUser, allUsers, accounts);
+            Console.WriteLine("Press enter to return to menu");
+            Console.ReadLine();
+            Menu(cUser, accounts, allUsers);
         }
+        // Logout method that takes the user to the login screen.
         static void Logout(decimal[,] accounts, string[,] allUsers)
         {
             Login(accounts, allUsers);
         }
-        // Shows the current users account without going back to menu.
-        static int ShowCurrentAccount(string user, string[,] allUsers, decimal[,] accounts)
+        // Method for handling user accounts seperate with forcing to return to menu like "ViewAccountBalance.
+        static void ShowCurrentAccount(string user, string[,] allUsers, decimal[,] accounts)
         {
-            int temp = 0;
             for (int i = 0; i < allUsers.Length; i++)
             {
                 if (allUsers[i, 0].Contains(user) && user != "Roger")
                 {
-                    Console.WriteLine("1) Main account: " + accounts[i, 0]);
-                    Console.WriteLine("2) Savings account: " + accounts[i,1]);
-                    temp = 1;
+                    Console.WriteLine("1) Main account: {0:C}", accounts[i, 0]);
+                    Console.WriteLine("2) Savings account: {0:C}", accounts[i, 1]);
                     break;
                 }
-                else if(allUsers[i,0].Contains(user) && user == "Jessica")
+                else if (allUsers[i, 0].Contains(user) && user == "Jessica")
                 {
-                    Console.WriteLine("1) Main account: " + accounts[i, 0]);
-                    Console.WriteLine("2) Salery account: " + accounts[i, 1]);
-                    temp = 1;
+                    Console.WriteLine("1) Main account: {0:C}", accounts[i, 0]);
+                    Console.WriteLine("2) Salery account: {0:C}", accounts[i, 1]);
                     break;
                 }
                 else if (allUsers[i, 0].Contains(user))
                 {
-                    Console.WriteLine("1) Main account: " + accounts[i,0]);
-                    temp = 2;
+                    Console.WriteLine("1) Main account: {0:C}", accounts[i, 0]);
                     break;
                 }
             }
-            return temp;
         }
         // Method to update account balance.
-        static void UpdatedNewAmountBalance(int user, decimal amountToTransfer, int selectedAccount, decimal[,] accounts)
+        static void UpdatedNewAmountBalance(int user, decimal amountToTransfer, int selectedAccount,int scdSelectedAccount, decimal[,] accounts)
         {
             for (int i = 0; i < accounts.Length; i++)
             {
-                if(user == i && selectedAccount == 1)
+                if (user == i && selectedAccount == 1 && scdSelectedAccount == 2)
                 {
                     accounts[i, 0] -= amountToTransfer;
                     accounts[i, 1] += amountToTransfer;
                     break;
                 }
-                else if(user == i && selectedAccount == 2)
+                else if (user == i && selectedAccount == 2 && scdSelectedAccount == 1)
                 {
                     accounts[i, 1] -= amountToTransfer;
                     accounts[i, 0] += amountToTransfer;
@@ -324,16 +345,18 @@ namespace BankMachine
             }
         }
         // Method to check if the amount wanted to be transferd is within range of what is on the account.
-        static bool ValidAmountToTransfer(decimal amountToTransfer,int selectedAccount, decimal first, decimal second)
+        static bool ValidAmountToTransfer(decimal amountToTransfer, int selectedAccount, decimal first, decimal second)
         {
-            if(amountToTransfer > first && selectedAccount != 2 || amountToTransfer > second && selectedAccount != 1)
+            if (amountToTransfer > first && selectedAccount != 2 || amountToTransfer > second && selectedAccount != 1)
             {
-                Console.WriteLine("The amount is to great for what exists");
+                Console.WriteLine("The amount is to great for what exists, Press enter to continue");
+                Console.ReadKey();
                 return false;
             }
-            else if(amountToTransfer <= 0 || amountToTransfer <= 0)
+            else if (amountToTransfer <= 0 || amountToTransfer <= 0)
             {
-                Console.WriteLine("The amount is to small for what exists");
+                Console.WriteLine("The amount is to small for what exists, Press enter to continue");
+                Console.ReadKey();
                 return false;
             }
             else
