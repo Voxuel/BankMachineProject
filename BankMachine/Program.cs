@@ -4,6 +4,7 @@ namespace BankMachine
 {
     class Program
     {
+        // Leo F SUT22
         public static void Main(string[] args)
         {
             // 2D arrays to store each user and accounts.
@@ -14,16 +15,17 @@ namespace BankMachine
         // Login structure let's user try to login 3 times or else the app closes.
         static void Login(decimal[,] accounts, string[,] allUsers)
         {
-            Console.WriteLine("Welcome to the bank");
-            Console.WriteLine();
-            Console.Write("Username: ");
-            var inputName = Console.ReadLine();
+            int displayTry = 2;
             Console.Clear();
             int tries = 0;
             do
             {
                 bool userNameValid = false;
                 bool userPinValid = false;
+                Console.WriteLine("Welcome to the bank");
+                Console.WriteLine();
+                Console.Write("Username: ");
+                var inputName = Console.ReadLine();
                 Console.WriteLine();
                 Console.Write("PIN-Code: ");
                 var inputPin = Console.ReadLine();
@@ -45,8 +47,9 @@ namespace BankMachine
                 }
                 else if (!userNameValid && !userPinValid)
                 {
-                    Console.WriteLine("Error loggin in.");
+                    Console.WriteLine("Error loggin in. You have {0} tries left", displayTry);
                     tries++;
+                    displayTry--;
                 }
             } while (tries < 3);
             Console.WriteLine("Wrong input too many timees, Please restart the app and try again");
@@ -220,6 +223,7 @@ namespace BankMachine
                     Console.WriteLine(ex.Message);
                 }
             }
+
             int currentUser = UserAccounts(accounts, user, out decimal first, out decimal second);
             if (ValidAmountToTransfer(amountToTransfer, selectedAccountInput, first, second))
             {
@@ -363,6 +367,7 @@ namespace BankMachine
                 return true;
             }
         }
+        // Method to check if pin is valid when withdraw is made.
         static bool PinCodeCheck(string pin, string[,] allUsers)
         {
             bool isValid = false;
