@@ -98,7 +98,7 @@ namespace BankMachine
                     error = 0;
                     break;
                 case 4:
-                    Logout(accounts, allUsers);
+                    Login(accounts,allUsers);
                     error = 0;
                     break;
                 default:
@@ -298,11 +298,6 @@ namespace BankMachine
             Console.WriteLine("Press enter to return to menu");
             Console.ReadLine();
             Menu(cUser, accounts, allUsers);
-        }
-        // Logout method that takes the user to the login screen.
-        static void Logout(decimal[,] accounts, string[,] allUsers)
-        {
-            Login(accounts, allUsers);
         }
         // Method for handling user accounts seperate with forcing to return to menu like "ViewAccountBalance.
         static void ShowCurrentAccount(string user, string[,] allUsers, decimal[,] accounts)
