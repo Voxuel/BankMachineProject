@@ -42,3 +42,16 @@ The login structure could be alot better, from handling the accounts in a databa
 
 I think the menu display looks ok and tells the user the important information about the program.
 
+In the menu i let the user decide where to go. I send the accounts, alluser and current user to each method the user can acess to be able to display and handle them like updating the account balance or just to check which user is logged in and display accounts for only that user.
+  
+This was one of the harder problems i hade with the program as the parameter lists went on to be a bit longer than I intended. One way to solve this would be to have the useraccounts and userinfo as global varibles which would make the whole process of handling alot easier but alot more unsafe as usually you don't want have full access to things like accounts and usernames and pincodes. This is why I have decided to make both of them at the start of the program in the Main()-Method.
+  
+ There is not much to say about the method to show the user accounts except since I've used 2D arrays I'm limited to a number of indexslots making it a bit difficult to have each user have a different amount of accounts as I have 1 user with 1 account visablee but he still takes up one slot in the memore as he has a second "hidden" account. One solve for this would be using jagged arrays instead if we are used to use arrays that being said. As a jagged array can vary in size for each induvidual place in the array.
+  
+  The hardest part to create was the transfer money method as I needed to check for the amount of accounts the user hade, if they had enought money for the transfer, exception handling as we are dealing with user input and also update the array that handles accounts and update on the right place. I've chosen to put some of these problems in separate methods as I find the code being to nested or unreadable if I hade it all in 1 method. this ofcourse came with the issue of having to send all elements in the parameter lists again to each of the new methods to be able to run for-loops and check conditions on each of the problems.
+ Also this could been made alot simpler with the use of a database as we kan check for a key in the DB and then compare each row for the specific user we want to handle.
+  
+ One thing I would change if I re-wrote the entire program is to implement more itteration control for things like when the user picks accounts to transfer to/from and the amount and if they enter wrong they are sent back to the menu. Here instead I could've added a loop that returns true if one of the parts are incorrectly input and lets the user try againn without sending them back to the menu but also have a way to return to the menu so they don't get stuck in a loop of trying again until they enter the right things.
+  
+  
+ 
