@@ -53,5 +53,5 @@ This was one of the harder problems i hade with the program as the parameter lis
   
  One thing I would change if I re-wrote the entire program is to implement more itteration control for things like when the user picks accounts to transfer to/from and the amount and if they enter wrong they are sent back to the menu. Here instead I could've added a loop that returns true if one of the parts are incorrectly input and lets the user try againn without sending them back to the menu but also have a way to return to the menu so they don't get stuck in a loop of trying again until they enter the right things.
   
-  
+ Also one big improvment I could make if I made the program again is to plan ahead alot more. As I can see how one day I solve a problem one way and the next I solve another problem in another way. This makes the code non-consistant and some parts are repetative and the code could been scaled down. 
  
